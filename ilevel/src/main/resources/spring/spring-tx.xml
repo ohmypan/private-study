@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="bankService" class="com.guys.ilevel.spring.tx.BankServiceImpl">
+        <property name="bankDao" ref="bankDao"/>
+        <property name="txManager" ref="transactionManager"/>
+        <property name="txDefinition">
+            <bean class="org.springframework.transaction.support.DefaultTransactionDefinition">
+                <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- 配置 DataSourece -->
+    <!-- 数据源配置,使用应用服务器的数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="1"/>
+        <!--<property name="maxIdle" value="5" />-->
+        <property name="maxActive" value="20"/>
+
+        <property name="defaultAutoCommit" value="false"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+
+        <!-- validationQuery：系统启动时通过该sql语句验证数据库是否可用,Oracle：'select 1 from dual'，mysql：'select 1 '-->
+        <property name="validationQuery" value="select * from dual"/>
+        <!--testWhileIdle:启用空闲连接检测，以便回收-->
+        <property name="testWhileIdle" value="true"/>
+        <!--testOnBorrow:从连接池获取连接时，是否检测连接可用性，开启性能会有些许影响-->
+        <property name="testOnBorrow" value="false"/>
+        <!--testOnReturn：释放连接到连接池时，是否检测连接可用性，开启性能会有些许影响-->
+        <property name="testOnReturn" value="false"/>
+
+        <!--如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false。-->
+        <property name="poolPreparedStatements" value="true"/>
+        <!--maxPoolPreparedStatementPerConnectionSize：最大缓存数，非oracle请设置为0-->
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat" />
+    </bean>
+
+
+    <!-- transaction support -->
+    <!-- PlatformTransactionMnager -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- 配置事务增强处理的切入点，以保证其被恰当的织入 -->
+    <aop:config>
+        <!-- 切点 -->
+        <aop:pointcut expression="execution(* cn.edu.tju.rico.service.impl.*.*(..))"
+                      id="bussinessService" />
+        <!-- 声明式事务的切入 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="bussinessService" />
+    </aop:config>
+
+    <!-- 由txAdvice切面定义事务增强处理 -->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <!-- get打头的方法为只读方法,因此将read-only设为 true -->
+            <tx:method name="get*" read-only="true" />
+            <!-- 其他方法为读写方法,因此将read-only设为 false -->
+            <tx:method name="*" read-only="false" propagation="REQUIRED"
+                       isolation="DEFAULT" />
+        </tx:attributes>
+    </tx:advice>
+</beans>
