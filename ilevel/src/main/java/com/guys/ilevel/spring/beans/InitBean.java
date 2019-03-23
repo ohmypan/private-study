@@ -22,6 +22,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitBean implements BeanNameAware , BeanFactoryAware , ApplicationContextAware ,
         BeanPostProcessor {
+
+
+    public InitBean(){
+
+    }
     private String beanName;
     private BeanFactory beanFactory;
     @Override
@@ -53,13 +58,18 @@ public class InitBean implements BeanNameAware , BeanFactoryAware , ApplicationC
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println(beanName +"------ before ------");
+
+        if(bean.getClass().equals(InitBean.class)){
+            System.out.println(beanName +"------ before ------");
+        }
         return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println(beanName +"------ after ------");
+        if(bean.getClass().equals(InitBean.class)){
+            System.out.println(beanName +"------ after ------");
+        }
         return bean;
     }
 }

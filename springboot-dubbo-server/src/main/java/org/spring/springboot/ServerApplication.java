@@ -1,5 +1,6 @@
 package org.spring.springboot;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by bysocket
  */
 // Spring Boot 应用的标识
+@MapperScan("org.spring.springboot.mybatis")
 @SpringBootApplication
 public class ServerApplication {
 
