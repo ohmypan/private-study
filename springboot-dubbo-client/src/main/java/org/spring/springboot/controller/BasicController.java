@@ -1,15 +1,15 @@
 package org.spring.springboot.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.guys.bean.City;
 import com.guys.bean.SysUser;
-import com.guys.iinterface.CityDubboService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.spring.springboot.handler.BasicHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class BasicController {
-    @Reference(version = "1.0.0")
-    CityDubboService cityDubboService;
+    @Autowired
+    BasicHandler basicHandler;
 
     @RequestMapping("/mm")
     public void printCity() {
         String cityName="衢州";
-        City city = cityDubboService.findCityByName(cityName);
+        City city = basicHandler.findCityByName(cityName);
         System.out.println(city.toString());
     }
 

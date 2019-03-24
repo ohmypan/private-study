@@ -55,7 +55,7 @@
             <version>1.4.0</version>
         </dependency>
 
-        <!-- Spring Boot Test 依赖 -->
+        <!-- Spring Boot test 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

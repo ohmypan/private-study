@@ -58,10 +58,10 @@ public class ShiroConfig {
      */
     @Bean
     public DefaultWebSecurityManager securityManager() {
-        UserRealm authRealm = userRealm();
+        //UserRealm authRealm = userRealm();
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        authRealm.setSysUserService();
-        authRealm.setSysPermissionService();
+//        authRealm.setSysUserService();
+//        authRealm.setSysPermissionService();
         securityManager.setRealm(userRealm());
         return securityManager;
     }
@@ -86,6 +86,7 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/mm", "anon");
         filterChainDefinitionMap.put("/captcha.jpg", "anon");
         filterChainDefinitionMap.put("/favicon.ico", "anon");
         filterChainDefinitionMap.put("/**", "authc");
