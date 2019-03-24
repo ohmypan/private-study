@@ -23,8 +23,8 @@
 hs_err_pid*
 
 #idea
-.idea
-.target
-.imi
+*.idea
+*.target
+*.imi
 
 
