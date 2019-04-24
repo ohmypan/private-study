@@ -11,6 +11,9 @@ public class IlevelApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(IlevelApplication.class, args);
         InitBean initBean = (InitBean) run.getBean("initBean");
+        /**
+         * running man
+         */
         System.out.println(initBean);
     }
 
